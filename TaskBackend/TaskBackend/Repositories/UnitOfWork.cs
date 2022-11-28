@@ -7,15 +7,15 @@ public class UnitOfWork : IUnitOfWork
     private readonly AppDbContext _context;
 
     public IUserRepository Users { get; set; }
-    public IAttemptRepository Attempts { get; set; }
-    public IGuessRepository Guesses { get; set; }
+    public IGameRepository Games { get; set; }
+    public IGameLogRepository GameLogs { get; set; }
 
     public UnitOfWork(AppDbContext context)
     {
         _context = context;
         Users = new UserRepository(context);
-        Attempts = new AttemptRepository(context);
-        Guesses= new GuessRepository(context);
+        Games = new GameRepository(context);
+        GameLogs= new GameLogRepository(context);
     }
 
     public void Dispose()

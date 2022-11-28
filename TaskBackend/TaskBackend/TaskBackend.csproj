@@ -7,13 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="microsoft.entityframeworkcore" Version="7.0.0" />
-    <PackageReference Include="microsoft.entityframeworkcore.design" Version="7.0.0">
+    <PackageReference Include="microsoft.entityframeworkcore" Version="6.0.10" />
+    <PackageReference Include="microsoft.entityframeworkcore.design" Version="6.0.10">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="microsoft.entityframeworkcore.sqlite" Version="7.0.0" />
+    <PackageReference Include="microsoft.entityframeworkcore.sqlite" Version="6.0.10" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.10" />
   </ItemGroup>
 
 </Project>
