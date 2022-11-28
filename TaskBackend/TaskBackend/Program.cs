@@ -1,5 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using Task.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddCors(options => { 
+    options.AddPolicy(name: "MyProject", policy => {
+         policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod(); }); });
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -14,6 +25,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("MyProject");
 
 app.UseAuthorization();
 
