@@ -6,6 +6,6 @@ public class User
 {
     public int Id { get; set; }
     [Required]
-    public string? userName { get; set; }
+    public string? UserName { get; set; }
     public IEnumerable<Attempt>? Games { get; set; }
 }
