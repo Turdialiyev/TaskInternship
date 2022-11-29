@@ -1,4 +1,5 @@
 
+using System.Collections;
 using Task.Modeles;
 using Task.Repositories;
 
@@ -15,40 +16,16 @@ public partial class GuessService : IGuessService
         _logger = logger;
     }
 
-    public Tuple<int, int, IQueryable<GameLog>> PlayResult(string userName, int number)
+    public new object PlayResult(int userId, int number)
     {
-        var existUser = ExistUser(userName);
-        var rendom = 0;
+
+        var rendom = RandomNumbers();
         var guessResult = GamePlay(number, rendom);
-
-
-
         var attemptModel = new Game();
 
-        attemptModel.UserId = existUser!.Id;
+        attemptModel.UserId = userId;
 
-        var existGame = _unitOfWork.Games.GetAll().Where(u => u.UserId == existUser.Id).FirstOrDefault(u => u.EGameState == EGameState.Continue);
-
-        if (existGame == null)
-        {
-            rendom = RandomNumbers();
-            guessResult = GamePlay(number, rendom);
-            attemptModel.Attempt = 1;
-            attemptModel.Number = rendom;
-            if (guessResult.Item2 == 4)
-            {
-                attemptModel.Number = rendom;
-                attemptModel.CheckNumber = true;
-                attemptModel.EGameState = EGameState.Ended;
-            }
-            else
-            {
-                attemptModel!.CheckNumber = false;
-                attemptModel.EGameState = EGameState.Continue;
-            }
-
-            existGame = _unitOfWork.Games.AddAsync(attemptModel).Result;
-        }
+        var existGame = _unitOfWork.Games.GetAll().Where(u => u.UserId == userId).FirstOrDefault(u => u.EGameState == EGameState.Continue);
 
         if (existGame != null && existGame!.Attempt == 7)
         {
@@ -76,11 +53,32 @@ public partial class GuessService : IGuessService
             existGame!.Attempt += 1;
             _unitOfWork.Games.Update(existGame);
         }
-        GameLog(existGame!.Id, guessResult.Item1, guessResult.Item2, number);
-        
-        var gameLog = _unitOfWork.GameLogs.GetAll().Where(g => g.GameId == existGame.Id);
 
-        return Tuple.Create(guessResult.Item1, guessResult.Item2, gameLog);
+        if (existGame == null)
+        {
+            attemptModel.Attempt = 1;
+            attemptModel.Number = rendom;
+            if (guessResult.Item2 == 4)
+            {
+                attemptModel.Number = rendom;
+                attemptModel.CheckNumber = true;
+                attemptModel.EGameState = EGameState.Ended;
+            }
+            else
+            {
+                attemptModel!.CheckNumber = false;
+                attemptModel.EGameState = EGameState.Continue;
+            }
+
+            existGame = _unitOfWork.Games.AddAsync(attemptModel).Result;
+        }
+        GameLog(existGame!.Id, guessResult.Item1, guessResult.Item2, number);
+
+        var gameLog = _unitOfWork.GameLogs.GetAll().Where(g => g.GameId == existGame.Id).Select(l => new { l.GuessNumber, l.M, l.P, l.Game!.CheckNumber, l.Game.Attempt });
+        
+        _logger.LogInformation($"===================> {rendom}");
+        
+        return gameLog;
     }
 
     public static Tuple<int, int> GamePlay(int gessNumber, int rendomeNumber)
@@ -150,5 +148,15 @@ public partial class GuessService : IGuessService
         };
 
         _unitOfWork.GameLogs.AddAsync(gamelogModel);
+    }
+
+    public IList GameLeader()
+    {
+        var games = _unitOfWork.Games.GetAll().Where(g => g.CheckNumber == true);
+        var orderByResult = from g in games
+                            orderby g.Attempt
+                            select new { g.Attempt, g.CheckNumber, g.Number, g.User!.UserName };
+
+        return orderByResult.ToList();
     }
 }
