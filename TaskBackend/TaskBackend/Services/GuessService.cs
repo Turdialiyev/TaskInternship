@@ -1,6 +1,7 @@
 
 using System.Collections;
 using Task.Modeles;
+using System.Linq;
 using Task.Repositories;
 
 namespace Task.Services;
@@ -16,7 +17,7 @@ public partial class GuessService : IGuessService
         _logger = logger;
     }
 
-    public new object PlayResult(int userId, int number)
+    public IList PlayResult(int userId, int number)
     {
 
         var rendom = RandomNumbers();
@@ -74,11 +75,11 @@ public partial class GuessService : IGuessService
         }
         GameLog(existGame!.Id, guessResult.Item1, guessResult.Item2, number);
 
-        var gameLog = _unitOfWork.GameLogs.GetAll().Where(g => g.GameId == existGame.Id).Select(l => new { l.GuessNumber, l.M, l.P, l.Game!.CheckNumber, l.Game.Attempt });
-        
+        var gameLog = _unitOfWork.GameLogs.GetAll().Where(g => g.GameId == existGame.Id).Select(l => new { l.GuessNumber, l.M, l.P, l.Game!.CheckNumber, l.Game.Attempt, l.Game.Number });
+
         _logger.LogInformation($"===================> {rendom}");
-        
-        return gameLog;
+
+        return gameLog.ToList();
     }
 
     public static Tuple<int, int> GamePlay(int gessNumber, int rendomeNumber)
@@ -150,13 +151,16 @@ public partial class GuessService : IGuessService
         _unitOfWork.GameLogs.AddAsync(gamelogModel);
     }
 
-    public IList GameLeader()
+    public IList GameLeader(int min = 0)
     {
-        var games = _unitOfWork.Games.GetAll().Where(g => g.CheckNumber == true);
-        var orderByResult = from g in games
-                            orderby g.Attempt
-                            select new { g.Attempt, g.CheckNumber, g.Number, g.User!.UserName };
-
-        return orderByResult.ToList();
+        var userWins = _unitOfWork.Users.GetAll().Where(x => x.Games!.Any(y => y.CheckNumber))
+        .Select(x => new User
+        {
+            Id = x.Id,
+            UserName = x.UserName,
+            Games = x.Games!.Where(y => y.CheckNumber)
+        }).Where(x => x.Games!.Count() >= min).OrderByDescending(x => x.Games!.Count());
+       
+        return userWins.ToList();
     }
 }

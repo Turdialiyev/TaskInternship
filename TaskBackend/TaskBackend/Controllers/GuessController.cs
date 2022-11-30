@@ -1,7 +1,4 @@
-using System.Text;
 using Microsoft.AspNetCore.Mvc;
-using Task.Modeles;
-using Task.Repositories;
 using Task.Services;
 
 namespace Task.Controllers;
@@ -12,7 +9,6 @@ public class GuessController : ControllerBase
 {
     private IGuessService _service;
     private ILogger<GuessController> _logger;
-    private IUnitOfWork _unitOfWork;
 
     public GuessController(ILogger<GuessController> logger, IGuessService service)
     {
@@ -39,12 +35,12 @@ public class GuessController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet]
-    public ActionResult GetAllLeaders()
+    [HttpGet("{min}")]
+    public ActionResult GetAllLeaders(int min = 0)
     {
-      var gameLeaders = _service.GameLeader();
+      var gameLeader = _service.GameLeader(min);
 
-        return Ok(gameLeaders);
+        return Ok(gameLeader);
     }
 }
 
