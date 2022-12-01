@@ -1,0 +1,85 @@
+<div class="container">
+    <h1 style="text-align: center;">you have 8 possibilities, you are given a 4-digit number, you have to find this 4-digit number in 8 possibilities </h1>
+    <form  [formGroup]="form" (ngSubmit) = "onSubmit()">
+      <div class="form-row">
+        <div class="col">
+          <label for="number1" class="form-label">Number</label>
+          <input formControlName="number1" id="number1" [ngClass]="{ 'is-invalid': submitted && form.controls['number1'].errors }" 
+          type="number" class="form-control" />
+          <div *ngIf="submitted && form.controls['number1'].errors" class="text-danger">
+           <div *ngIf="submitted && form.controls['number1'].errors['required']">number is Required. </div>
+           <div *ngIf="submitted && form.controls['number1'].errors['max']">the number entered must be a single digit</div>
+        </div>
+        </div>
+        <div class="col">
+          <label for="number2" class="form-label">Number</label>
+          <input formControlName="number2" id="number2" [ngClass]="{ 'is-invalid': submitted && form.controls['number2'].errors }" 
+          type="number" class="form-control" />
+          <div *ngIf="submitted && form.controls['number2'].errors" class="text-danger">
+           <div *ngIf="submitted && form.controls['number2'].errors['required']">number is Required. </div>
+           <div *ngIf="submitted && form.controls['number2'].errors['max']">the number entered must be a single digit</div>
+        </div>
+        </div>
+        <div class="col">
+          <label for="number3" class="form-label">Number</label>
+          <input formControlName="number3" id="number3" [ngClass]="{ 'is-invalid': submitted && form.controls['number3'].errors }" 
+          type="number" class="form-control" />
+          <div *ngIf="submitted && form.controls['number3'].errors" class="text-danger">
+           <div *ngIf="submitted && form.controls['number3'].errors['required']">number is Required. </div>
+           <div *ngIf="submitted && form.controls['number3'].errors['max']">the number entered must be a single digit</div>
+          </div>
+        </div>
+        <div class="col">
+          <label for="number4" class="form-label">Number</label>
+          <input formControlName="number4" id="number4" [ngClass]="{ 'is-invalid': submitted && form.controls['number4'].errors }" 
+          type="number" class="form-control" />
+          <div *ngIf="submitted && form.controls['number4'].errors" class="text-danger">
+           <div *ngIf="submitted && form.controls['number4'].errors['required']">number is Required. </div>
+           <div *ngIf="submitted && form.controls['number4'].errors['max']">the number entered must be a single digit</div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="mb-3">
+        <label for="number" class="form-label">Name</label>
+        <input formControlName="number" id="number" [ngClass]="{ 'is-invalid': submitted && form.controls['number'].errors }" 
+        type="number" class="form-control" />
+        <div *ngIf="submitted && form.controls['number'].errors" class="text-danger">
+           <div *ngIf="submitted && form.controls['number'].errors['required']">number is Required. </div>
+        </div>
+      </div> -->
+      <br>
+      <button *ngIf="play" type="submit"  class="btn btn-primary">Submit</button>
+      <a routerLink="" *ngIf="!play" class="btn btn-primary">New Game</a>
+    </form>
+</div>
+<div class="container">
+  <table *ngIf="gameResult" class="table table-hover">
+    <thead  class="thead-dark">
+      <tr>
+        <th *ngIf="result" colspan="4"><h3 style="text-align: center; color: green;"> you find it <span *ngIf="gameResult && rendomNUmber" style="text-align: center; color: aqua;">: rendome number {{rendomNUmber}} </span></h3> </th>
+        <th *ngIf="!result &&  gameResult.length == 8" colspan="4"><h3 style="text-align: center; color:red;"> you didn't win <span style="text-align: center; color: aqua;">: rendome number {{rendomNUmber}}</span> </h3> </th>
+      </tr>
+  </thead> 
+    <thead class="thead-dark">
+      <tr>
+        <th colspan="2">Attempt: {{gameResult.length}} </th>
+        <th colspan="2" *ngIf="gameResult.length" >Result: {{result}} </th>
+      </tr>
+  </thead>  
+    <thead class="thead-dark">
+        <tr>
+           <th>Your number</th>
+           <th>P</th>
+           <th>M</th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let result of gameResult; let c = count">
+        <td>{{result.guessNumber}}</td> 
+        <td>{{result.p}}</td> 
+        <td>{{result.m}}</td> 
+      </tr>
+    </tbody>
+  </table>
+</div>
+

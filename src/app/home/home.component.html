@@ -1,0 +1,15 @@
+<div class="container">
+    <h1 style="text-align: center;">Welcom to game Site</h1>
+    <h2 style="text-align: center;"> before click start button, You must enter your name below input</h2>
+    <form  [formGroup]="form" (ngSubmit) = "onSubmit()">
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input formControlName="name" id="name" [ngClass]="{ 'is-invalid': submitted && form.controls['name'].errors }" 
+        type="text" class="form-control" />
+        <div *ngIf="submitted && form.controls['name'].errors" class="text-danger">
+           <div *ngIf="submitted && form.controls['name'].errors['required']">name is Required. </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">submit</button>
+    </form>
+</div>

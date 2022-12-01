@@ -1,0 +1,28 @@
+<div class="container">
+    <div class="form-row">
+      <div class="col-4">
+        <label for="number1" class="form-label">Number</label>
+        <input id="number1"  required="required" [(ngModel)] = "min" name="min" (input)="eventButton()"
+        type="number" class="form-control" />
+      </div>
+    </div>
+  <table *ngIf="leaderResult" class="table table-hover">
+    <thead class="thead-dark">
+      <tr>
+         <th colspan="2"> <h3 style="text-align: center;" >Result : {{leaderResult.length}}</h3></th>
+      </tr>
+  </thead>
+    <thead class="thead-dark">
+        <tr>
+           <th>Name</th>
+           <th>Attempt</th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let result of leaderResult; let c = count">
+        <td>{{result.userName}}</td>
+        <td>{{result.games.length}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
